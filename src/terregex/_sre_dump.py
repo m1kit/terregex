@@ -162,6 +162,7 @@ def _dump(pattern, groupdict):
                        
         elif op == BRANCH:
             # av[0] is always None
+            emit("(?:")
             for x in av[1][:-1]:
                 s, suboffsets = _dump(x, groupdict)
                 include(suboffsets)
@@ -170,6 +171,7 @@ def _dump(pattern, groupdict):
             s, suboffsets = _dump(av[1][-1], groupdict)
             include(suboffsets)
             emit(s)
+            emit(")")
         elif op == ANY:
             emit(".")
         elif op == AT:
