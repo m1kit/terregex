@@ -1,89 +1,12 @@
 """Convert the parse tree created by sre_parse.parse back into a string
 
-Python's "re" regular expression library uses the 'sre' modules
-developed by Secret Labs AB.  (Tack sa mycket, effbot!)
+This library is borrowed from http://www.dalkescientific.com/Python/sre_dump.html
+There are some modifications for python3 support and bug fixes.
 
-This is an internal module, which means it isn't documented and you
-shouldn't use it.  Despite that, it's a very useful module if you are
-like me and develop alternate ways to parse using regular expressions.
-With a bit of work you can make your own special-purpose C code given
-a regular expression, or make a SAX event generating parser generator
-like Martel (see http://www.dalkescientific.com/Martel/ ).
+Originally written in 2003 by Andrew Dalke <dalke@dalkescientific.com>,
+Updated in 2021 by Mikihito Matsuura <me@mikit.dev>
 
-Less esoterically, you can do like Jeff Petkau did and find matching
-strings given the pattern; see
-    http://www.uselesspython.com/jpetkau1.py
-
-When writing these tools, it's very helpful to know where you are in
-the tree.  sre_dump lets you dump the tree back into a regular
-expression, as in:
-
->>> import sre_dump, sre_parse
->>> tree = sre_parse.parse("AB|CD")
->>> tree
-[('branch', (None, [[('literal', 65), ('literal', 66)], [('literal', 
-67), ('literal', 68)]]))]
->>> sre_dump.dump(tree)
-'AB|CD'
->>> sre_dump.dump(tree[0][1][1][0])
-'AB'
->>>
-
-For more in-depth debugging of regular expression generated state
-diagrams, you will want to know where the given node came from.
-Viewing just the text of the subpattern doesn't help because it can
-exist several times in the pattern.  The 'dump_and_offsets' function
-also returns a list of locations for each subexpression.  The list is
-a 3-tuple of (expression, start position, end position).
-
->>> s, offsets = sre_dump.dump_and_offsets(tree)
->>> def show_offsets(s, offsets):
-...     print s
-...     for expr, i, j, text in offsets:
-...             print " "*i + "-"*(j-i) + " " *(len(s)-j+1), s[i:j]
-... 
->>> show_offsets(s, offsets)
-AB|CD
--      A
- -     B
-   -   C
-    -  D
------  AB|CD
->>>
-
-You can get the same effect with the pprint function.
-
->>> print sre_dump.pprint("(AB*|C?D){2,3}")
-(AB*|C?D){2,3}
- -             A
-  -            B
-  --           B*
-     -         C
-     --        C?
-       -       D
- -------       AB*|C?D
----------      (AB*|C?D)
--------------- (AB*|C?D){2,3}
->>>
-
-
-It is almost complete.  What's missing are a few edge cases, like rare
-character escapes (especially in character ranges).  Please send me
-any patches along with test cases.
-
-This was developed using Python 2.3.  sre_parse hasn't changed much
-between releases so this should be pretty portable.
-
-Written in 2003 by Andrew Dalke <dalke@dalkescientific.com>
-
-Released into the public domain.  No copyright protections asserted.
-
-Enjoy!
-
-Changelog:
-
-7 Aug 2003 - Initial release.
-
+SPDX-License-Identifier: Apache-2.0
 """
 import sre_parse
 from sre_constants import *
